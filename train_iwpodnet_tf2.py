@@ -165,7 +165,7 @@ if __name__ == '__main__':
 	#
 	#  Training generator with lots of data augmentation	
 	#
-	train_generator = ALPRDataGenerator(Data, batch_size = batch_size, dim =  dim, stride = int(model_stride), shuffle=True, OutputScale = 1.0)
+	train_generator = ALPRDataGenerator(Data, batch_size = batch_size, dim =  dim, stride = int(model_stride), shuffle=True, OutputScale = 1.0, workers=10, use_multiprocessing=False)
 
 	#
 	#  Compiles Model
@@ -191,7 +191,7 @@ if __name__ == '__main__':
 	      
 	# -> early stopping criteria -- not currently used		
 	es = EarlyStopping(monitor='loss',
-	                     patience = MaxEpochs//30,
+	                     patience = MaxEpochs//40,
 	                     restore_best_weights = False)
 	
 	
@@ -200,10 +200,10 @@ if __name__ == '__main__':
 	#
 	print('Starting to train the model')
 	history = model.fit(x = train_generator,
-	                      steps_per_epoch = np.floor(len(Data)/batch_size),
+	                      steps_per_epoch = int(np.floor(len(Data)/batch_size)),
 	                      epochs = MaxEpochs, 
 	                      verbose = 1,
-	                      callbacks=[learn_control, ckpt])  
+	                      callbacks=[learn_control, ckpt, es])  
 
 
 	print('Finished to train the model')

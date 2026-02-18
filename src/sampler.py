@@ -388,14 +388,10 @@ def augment_sample(I, shapelist, dim, maxangle = 2 * np.array([65.,65.,55.]), ma
 		Iroi, ptslist = project_all(I, H, ptslist, dim)
 		pts = ptslist[0]
 	else:  # if fake plate
-		#
-		#  Random BG crop if no plate is present, resizes in x and y
-		#	
-		rfactorx = max(dim/I.shape[0],  0.5 + 0.5*np.random.rand())
-		rfactory = max(rfactorx, dim/I.shape[1])
+		rfactorx = max(dim/I.shape[1], 0.5 + 0.5*np.random.rand())
+		rfactory = max(dim/I.shape[0], 0.5 + 0.5*np.random.rand())
 		Iroi = cv2.resize(I, (0,0), fx = rfactorx, fy = rfactory)
-		Iroi = random_crop(I, dim, dim)
-		
+		Iroi = random_crop(Iroi, dim, dim)
 	#
 	#	Just a sanity check, test should never hold
 	#	

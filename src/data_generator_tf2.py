@@ -7,9 +7,10 @@ from src.sampler import augment_sample, labels2output_map
 #
 
 
-class ALPRDataGenerator(keras.utils.Sequence):
+class ALPRDataGenerator(keras.utils.PyDataset):
     'Generates data for Keras'
-    def __init__(self, data, batch_size=32, dim =  208, stride = 16, shuffle=True, OutputScale = 1.0):
+    def __init__(self, data, batch_size=32, dim =  208, stride = 16, shuffle=True, OutputScale = 1.0, **kwargs):
+        super().__init__(**kwargs)
         'Initialization'
         self.dim = dim
         self.stride = stride
@@ -53,6 +54,10 @@ class ALPRDataGenerator(keras.utils.Sequence):
             # Store sample
             XX, llp, ptslist = augment_sample(self.data[idx][0], self.data[idx][1], self.dim)
             YY = labels2output_map(llp, ptslist, self.dim, self.stride, alfa = 0.5)
-            X[i,] = XX*self.OutputScale
+            try:
+                X[i,] = XX*self.OutputScale
+            except:
+                print("Error in data augmentation, skipping sample")
+                X[i,] = np.zeros((self.dim, self.dim, 3))
             y[i,] = YY
         return X, y
