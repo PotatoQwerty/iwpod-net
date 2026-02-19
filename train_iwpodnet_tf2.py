@@ -218,5 +218,4 @@ if __name__ == '__main__':
 	#  Saves trained weights and model (TF2) format
 	#
 	print ('Saving model (%s)' % model_path_final)
-	model.save_weights(model_path_final + '.h5', save_format  ='h5')
 	model.save(model_path_final)
